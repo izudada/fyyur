@@ -3,6 +3,7 @@
 #----------------------------------------------------------------------------#
 
 import json
+from wsgiref import validate
 import dateutil.parser
 import babel
 from flask import Flask, render_template, request, Response, flash, redirect, url_for, abort
@@ -62,6 +63,14 @@ def index():
 def venues():
   # TODO: replace with real venues data.
   #       num_upcoming_shows should be aggregated based on number of upcoming shows per venue.
+  # data = []
+  # inner_data = {}
+  # venue = []
+
+  # info = Venue.query.filter().all()
+  # for datum in info:
+  #       inner_data['city'] = datum.city
+  #       inner_data['state'] = datum.state
   data=[{
     "city": "San Francisco",
     "state": "CA",
@@ -416,11 +425,34 @@ def create_artist_submission():
   # TODO: insert form data as a new Venue record in the db, instead
   # TODO: modify data to be the data object returned from db insertion
 
-  # on successful db insert, flash success
-  flash('Artist ' + request.form['name'] + ' was successfully listed!')
-  # TODO: on unsuccessful db insert, flash an error instead.
-  # e.g., flash('An error occurred. Artist ' + data.name + ' could not be listed.')
-  return render_template('pages/home.html')
+  form = ArtistForm(request.form)
+  if form.validate_on_submit():
+    name = request.form.get('name')
+    city = request.form.get('city')
+    state = request.form.get('state')
+    phone = request.form.get('phone')
+    image_link = request.form.get('image_link')
+    genres = request.form.getlist('genres')
+    facebook_link = request.form.get('facebook_link')
+    website_link = request.form.get('website_link')
+    seeking_venue = request.form.get('seeking_talent',  type=bool)
+    seeking_description = request.form.get('seeking_description')
+
+    artist = Artist(name=name, city=city, state=state, phone=phone, image_link=image_link, genres=genres, facebook_link=facebook_link, website_link=website_link, seeking_venue=seeking_venue, seeking_description=seeking_description)
+    db.session.add(artist)
+    db.session.commit()
+
+    # on successful db insert, flash success
+    flash('Artist ' + request.form['name'] + ' was successfully listed!')
+    # TODO: on unsuccessful db insert, flash an error instead.
+    # e.g., flash('An error occurred. Artist ' + data.name + ' could not be listed.')
+    return render_template('pages/home.html')
+  else:
+    for fieldName, errorMessages in form.errors.items():
+      for err in errorMessages:
+        print(err)
+    flash('Failed to create Artist ' + request.form['name'] )
+    return render_template('forms/new_artist.html', form=form)
 
 
 #  Shows
@@ -478,6 +510,13 @@ def create_shows():
 def create_show_submission():
   # called to create new shows in the db, upon submitting new show listing form
   # TODO: insert form data as a new Show record in the db, instead
+  form = ShowForm(request.form)
+  if form.validate_on_submit():
+    artist_id = request.form.get('artist_id')
+    venue_id = request.form.get('venue_id')
+    start_time = request.form.get('start_time')
+    new_date = format_datetime(start_time)
+
 
   # on successful db insert, flash success
   flash('Show was successfully listed!')
