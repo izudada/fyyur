@@ -515,7 +515,16 @@ def create_show_submission():
     artist_id = request.form.get('artist_id')
     venue_id = request.form.get('venue_id')
     start_time = request.form.get('start_time')
-    new_date = format_datetime(start_time)
+    # new_date = format_datetime(start_time)
+    new_show  = Show(venue_id=venue_id, artist_id=artist_id, created_date=start_time)
+    db.session.add(new_show)
+    db.session.commit()
+  else:
+    for fieldName, errorMessages in form.errors.items():
+      for err in errorMessages:
+        print(err)
+    flash('Failed to create Show ' )
+    return render_template('forms/new_show.html', form=form)
 
 
   # on successful db insert, flash success
