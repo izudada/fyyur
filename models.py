@@ -1,4 +1,7 @@
+from venv import create
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
+import pytz
 
 db = SQLAlchemy()
 
@@ -17,7 +20,7 @@ class Show(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     venue_id = db.Column(db.Integer, db.ForeignKey('Venue.id'), nullable=False)
     artist_id = db.Column(db.Integer, db.ForeignKey('Artist.id'), nullable=False)
-    created_date = db.Column(db.DateTime(timezone=True))
+    created_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
 
 
 class Venue(db.Model):
@@ -36,6 +39,16 @@ class Venue(db.Model):
     seeking_talent = db.Column(db.Boolean, default=False)
     seeking_description = db.Column(db.String(1000))
     shows = db.relationship('Show', backref='venue', lazy=True)
+
+    @property
+    def num_upcoming_shows(self):
+        show_result = 0
+        info = Venue.query.get(self.id).shows
+        if info:
+            for days in info:
+                if days.created_date > datetime.utcnow().replace(tzinfo=pytz.UTC):
+                    show_result += 1
+        return show_result
 
     # TODO: implement any missing fields, as a database migration using Flask-Migrate
 
