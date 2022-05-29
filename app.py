@@ -77,7 +77,7 @@ def venues():
           {
             "id" : datum.id,
             "name" : datum.name,
-            "num_upcoming_shows": len(Venue.query.get(datum.id).shows)
+            "num_upcoming_shows": Venue.query.get(datum.id).num_upcoming_shows
           }
         ]
       }
@@ -85,7 +85,7 @@ def venues():
       inner_data[datum.city]["venues"].append( {
             "id" : datum.id,
             "name" : datum.name,
-            "num_upcoming_shows": len(Venue.query.get(datum.id).shows)
+            "num_upcoming_shows": Venue.query.get(datum.id).num_upcoming_shows
           })
   for key in inner_data:
     data.append(inner_data[key])
