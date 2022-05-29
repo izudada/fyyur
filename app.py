@@ -190,14 +190,18 @@ def create_venue_submission():
       return render_template('forms/new_venue.html', form=form)
         
 
-@app.route('/venues/<venue_id>', methods=['DELETE'])
+@app.route('/venues/<venue_id>/delete', methods=['DELETE', 'POST'])
 def delete_venue(venue_id):
   # TODO: Complete this endpoint for taking a venue_id, and using
   # SQLAlchemy ORM to delete a record. Handle cases where the session commit could fail.
+  venue = Venue.query.get(venue_id)
+  db.session.delete(venue)
+  db.session.commit()
 
   # BONUS CHALLENGE: Implement a button to delete a Venue on a Venue Page, have it so that
   # clicking that button delete it from the db then redirect the user to the homepage
-  return None
+  flash('Venue deleted successfully' )
+  return redirect(url_for('index'))
 
 #  Artists
 #  ----------------------------------------------------------------
