@@ -65,7 +65,6 @@ def venues():
   #       num_upcoming_shows should be aggregated based on number of upcoming shows per venue.
   data = []
   inner_data = {}
-  venue = []
 
   info = Venue.query.filter().all()
   for datum in info:
