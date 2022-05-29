@@ -63,35 +63,32 @@ def index():
 def venues():
   # TODO: replace with real venues data.
   #       num_upcoming_shows should be aggregated based on number of upcoming shows per venue.
-  # data = []
-  # inner_data = {}
-  # venue = []
+  data = []
+  inner_data = {}
+  venue = []
 
-  # info = Venue.query.filter().all()
-  # for datum in info:
-  #       inner_data['city'] = datum.city
-  #       inner_data['state'] = datum.state
-  data=[{
-    "city": "San Francisco",
-    "state": "CA",
-    "venues": [{
-      "id": 1,
-      "name": "The Musical Hop",
-      "num_upcoming_shows": 0,
-    }, {
-      "id": 3,
-      "name": "Park Square Live Music & Coffee",
-      "num_upcoming_shows": 1,
-    }]
-  }, {
-    "city": "New York",
-    "state": "NY",
-    "venues": [{
-      "id": 2,
-      "name": "The Dueling Pianos Bar",
-      "num_upcoming_shows": 0,
-    }]
-  }]
+  info = Venue.query.filter().all()
+  for datum in info:
+    if datum.city not in inner_data:
+      inner_data[datum.city] = {
+        "city": datum.city,
+        "state":datum.state,
+        "venues": [
+          {
+            "id" : datum.id,
+            "name" : datum.name,
+            "num_upcoming_shows": len(Venue.query.get(datum.id).shows)
+          }
+        ]
+      }
+    else:
+      inner_data[datum.city]["venues"].append( {
+            "id" : datum.id,
+            "name" : datum.name,
+            "num_upcoming_shows": len(Venue.query.get(datum.id).shows)
+          })
+  for key in inner_data:
+    data.append(inner_data[key])
   return render_template('pages/venues.html', areas=data);
 
 @app.route('/venues/search', methods=['POST'])
