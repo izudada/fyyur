@@ -71,7 +71,7 @@ class Venue(db.Model):
                     result["artist_id"] = show.artist_id
                     result["artist_name"] = show.artist.id
                     result["artist_image_link"] = show.artist.image_link
-                    result["start_time"] = show.created_date
+                    result["start_time"] = str(show.created_date)
                 final_result.append(result)
         return final_result
 
