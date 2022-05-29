@@ -75,6 +75,20 @@ class Venue(db.Model):
                 final_result.append(result)
         return final_result
 
+    @property
+    def upcoming_shows(self):
+        result = {}
+        final_result = []
+        info = Venue.query.get(self.id).shows 
+        if info:
+            for show in info:
+                if show.created_date > datetime.utcnow().replace(tzinfo=pytz.UTC):
+                    result["artist_id"] = show.artist_id
+                    result["artist_name"] = show.artist.id
+                    result["artist_image_link"] = show.artist.image_link
+                    result["start_time"] = show.created_date
+                final_result.append(result)
+        return final_result
 
 
     # TODO: implement any missing fields, as a database migration using Flask-Migrate
