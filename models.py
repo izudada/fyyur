@@ -109,6 +109,16 @@ class Artist(db.Model):
     seeking_description = db.Column(db.String(1000))
     shows = db.relationship('Show', backref='artist', lazy=True)
 
+    @property
+    def num_upcoming_shows(self):
+        show_result = 0
+        info = Artist.query.get(self.id).shows
+        if info:
+            for days in info:
+                if days.created_date > datetime.utcnow().replace(tzinfo=pytz.UTC):
+                    show_result += 1
+        return show_result
+
     # TODO: implement any missing fields, as a database migration using Flask-Migrate
 
 # TODO Implement Show and Artist models, and complete all model relationships and properties, as a database migration.
