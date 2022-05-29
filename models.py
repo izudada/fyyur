@@ -49,6 +49,16 @@ class Venue(db.Model):
                 if days.created_date > datetime.utcnow().replace(tzinfo=pytz.UTC):
                     show_result += 1
         return show_result
+    
+    @property
+    def num_past_shows(self):
+        show_result = 0
+        info = Venue.query.get(self.id).shows
+        if info:
+            for days in info:
+                if days.created_date < datetime.utcnow().replace(tzinfo=pytz.UTC):
+                    show_result += 1
+        return show_result
 
     # TODO: implement any missing fields, as a database migration using Flask-Migrate
 
