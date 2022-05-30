@@ -129,6 +129,36 @@ class Artist(db.Model):
                     show_result += 1
         return show_result
 
+    @property
+    def past_shows(self):
+        result = {}
+        final_result = []
+        info = Artist.query.get(self.id).shows 
+        if info:
+            for show in info:
+                if show.created_date < datetime.utcnow().replace(tzinfo=pytz.UTC):
+                    result["venue_id"] = show.venue_id
+                    result["venue_name"] = show.venue.name
+                    result["venue_image_link"] = show.venue.image_link
+                    result["start_time"] = str(show.created_date)
+                final_result.append(result)
+        return final_result
+
+    @property
+    def upcoming_shows(self):
+        result = {}
+        final_result = []
+        info = Artist.query.get(self.id).shows 
+        if info:
+            for show in info:
+                if show.created_date > datetime.utcnow().replace(tzinfo=pytz.UTC):
+                    result["venue_id"] = show.venue_id
+                    result["venue_name"] = show.venue.name
+                    result["venue_image_link"] = show.venue.image_link
+                    result["start_time"] = str(show.created_date)
+                final_result.append(result)
+        return final_result
+
     # TODO: implement any missing fields, as a database migration using Flask-Migrate
 
 # TODO Implement Show and Artist models, and complete all model relationships and properties, as a database migration.
