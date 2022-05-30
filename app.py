@@ -363,8 +363,44 @@ def edit_venue(venue_id):
 @app.route('/venues/<int:venue_id>/edit', methods=['POST'])
 def edit_venue_submission(venue_id):
   # TODO: take values from the form submitted, and update existing
-  # venue record with ID <venue_id> using the new attributes
-  return redirect(url_for('show_venue', venue_id=venue_id))
+  get_venue = Venue.query.get(venue_id)
+  form = VenueForm(request.form)
+  if form.validate_on_submit():
+    name = request.form.get('name')
+    city = request.form.get('city')
+    state = request.form.get('state')
+    address = request.form.get('address')
+    phone = request.form.get('phone')
+    image_link = request.form.get('image_link')
+    genres = request.form.getlist('genres')
+    facebook_link = request.form.get('facebook_link')
+    website_link = request.form.get('website_link')
+    seeking_talent = request.form.get('seeking_talent',  type=bool)
+    seeking_description = request.form.get('seeking_description')
+
+    # venue record with ID <venue_id> using the new attributes
+    get_venue.name = name
+    get_venue.city = city
+    get_venue.state = state
+    get_venue.address = address
+    get_venue.phone = phone
+    get_venue.image_link = image_link
+    get_venue.genres = genres
+    get_venue.facebook_link = facebook_link
+    get_venue.website_link = website_link
+    get_venue.seeking_talent = seeking_talent
+    get_venue.seeking_description = seeking_description
+
+    db.session.commit()
+
+    flash('Venue ' + request.form['name'] + ' was successfully updated!')
+    return redirect(url_for('show_venue', venue_id=venue_id))
+  
+  for fieldName, errorMessages in form.errors.items():
+      for err in errorMessages:
+        print(err)
+  flash('Venue ' + request.form['name'] + ' was not successfully updated!')
+  return render_template('forms/edit_venue.html', form=form, venue=get_venue)
 
 #  Create Artist
 #  ----------------------------------------------------------------
