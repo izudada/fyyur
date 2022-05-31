@@ -67,28 +67,32 @@ def venues():
   data = []
   inner_data = {}
 
-  info = Venue.query.filter().all()
-  for datum in info:
-    if datum.city not in inner_data:
-      inner_data[datum.city] = {
-        "city": datum.city,
-        "state":datum.state,
-        "venues": [
-          {
-            "id" : datum.id,
-            "name" : datum.name,
-            "num_upcoming_shows": Venue.query.get(datum.id).num_upcoming_shows
-          }
-        ]
-      }
-    else:
-      inner_data[datum.city]["venues"].append( {
-            "id" : datum.id,
-            "name" : datum.name,
-            "num_upcoming_shows": Venue.query.get(datum.id).num_upcoming_shows
-          })
-  for key in inner_data:
-    data.append(inner_data[key])
+  try:
+    info = Venue.query.filter().all()
+    for datum in info:
+      if datum.city not in inner_data:
+        inner_data[datum.city] = {
+          "city": datum.city,
+          "state":datum.state,
+          "venues": [
+            {
+              "id" : datum.id,
+              "name" : datum.name,
+              "num_upcoming_shows": Venue.query.get(datum.id).num_upcoming_shows
+            }
+          ]
+        }
+      else:
+        inner_data[datum.city]["venues"].append( {
+              "id" : datum.id,
+              "name" : datum.name,
+              "num_upcoming_shows": Venue.query.get(datum.id).num_upcoming_shows
+            })
+    for key in inner_data:
+      data.append(inner_data[key])
+  except:
+    flash("No available shows yet")
+
   return render_template('pages/venues.html', areas=data);
 
 @app.route('/venues/search', methods=['POST'])
