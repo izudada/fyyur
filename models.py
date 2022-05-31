@@ -18,8 +18,8 @@ class Show(db.Model):
     __table__name = 'show'
 
     id = db.Column(db.Integer, primary_key=True)
-    venue_id = db.Column(db.Integer, db.ForeignKey('Venue.id'), nullable=False)
-    artist_id = db.Column(db.Integer, db.ForeignKey('Artist.id'), nullable=False)
+    venue_id = db.Column(db.Integer, db.ForeignKey('venue.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
+    artist_id = db.Column(db.Integer, db.ForeignKey('artist.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
     created_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
 
 
