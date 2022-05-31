@@ -91,7 +91,7 @@ def venues():
     for key in inner_data:
       data.append(inner_data[key])
   except:
-    flash("No available shows yet")
+    flash("No available venues yet")
 
   return render_template('pages/venues.html', areas=data);
 
@@ -211,7 +211,12 @@ def delete_venue(venue_id):
 @app.route('/artists')
 def artists():
   # TODO: replace with real data returned from querying the database
-  data = Artist.query.filter().all()
+  data = []
+  try:
+    data = Artist.query.filter().all()
+  except:
+    flash("No available artist yet")
+
   return render_template('pages/artists.html', artists=data)
 
 @app.route('/artists/search', methods=['POST'])
