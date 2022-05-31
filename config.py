@@ -10,7 +10,7 @@ DEBUG = True
 
 
 # TODO IMPLEMENT DATABASE URL
-SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
+SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")  
 
 # Alter Postgresql dialect name in heroku
 if SQLALCHEMY_DATABASE_URI.startswith("postgres://"):
