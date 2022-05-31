@@ -54,7 +54,6 @@ app.jinja_env.filters['datetime'] = format_datetime
 
 @app.route('/')
 def index():
-  data = Venue.query.filter().all()
   return render_template('pages/home.html', data=data)
 
 
