@@ -288,8 +288,42 @@ def edit_artist(artist_id):
 def edit_artist_submission(artist_id):
   # TODO: take values from the form submitted, and update existing
   # artist record with ID <artist_id> using the new attributes
+  get_artist = Artist.query.get(artist_id)
+  form = ArtistForm(request.form)
+  if form.validate_on_submit():
+    name = request.form.get('name')
+    city = request.form.get('city')
+    state = request.form.get('state')
+    phone = request.form.get('phone')
+    image_link = request.form.get('image_link')
+    genres = request.form.getlist('genres')
+    facebook_link = request.form.get('facebook_link')
+    website_link = request.form.get('website_link')
+    seeking_venue = request.form.get('seeking_talent',  type=bool)
+    seeking_description = request.form.get('seeking_description')
 
-  return redirect(url_for('show_artist', artist_id=artist_id))
+    get_artist.name = name
+    get_artist.city = city
+    get_artist.state = state
+    get_artist.phone = phone
+    get_artist.image_link = image_link
+    get_artist.genres = genres
+    get_artist.facebook_link = facebook_link
+    get_artist.website_link = website_link
+    get_artist.seeking_venue = seeking_venue
+    get_artist.seeking_description = seeking_description
+
+    db.session.commit()
+
+    flash('Artist ' + request.form['name'] + ' was successfully updated!')
+    return redirect(url_for('show_artist', artist_id=artist_id))
+
+  for fieldName, errorMessages in form.errors.items():
+      for err in errorMessages:
+        print(err)
+
+  flash('Artist ' + request.form['name'] + ' was not updated!')
+  return render_template('forms/edit_artist.html', form=form, artist=get_artist)
 
 @app.route('/venues/<int:venue_id>/edit', methods=['GET'])
 def edit_venue(venue_id):
