@@ -91,9 +91,8 @@ def venues():
     for key in inner_data:
       data.append(inner_data[key])
     return render_template('pages/venues.html', areas=data)
-  except:
-    flash("No available venues yet")
-
+  except Exception as e:
+    print(e)
     return render_template('pages/venues.html', areas=data)
 
 @app.route('/venues/search', methods=['POST'])
