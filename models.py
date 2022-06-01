@@ -46,7 +46,7 @@ class Venue(db.Model):
         info = Venue.query.get(self.id).shows
         if info:
             for days in info:
-                if days.created_date > datetime.utcnow().replace(tzinfo=pytz.UTC):
+                if days.created_date > datetime.now():
                     show_result += 1
         return show_result
     
@@ -56,7 +56,7 @@ class Venue(db.Model):
         info = Venue.query.get(self.id).shows
         if info:
             for days in info:
-                if days.created_date < datetime.utcnow().replace(tzinfo=pytz.UTC):
+                if days.created_date < datetime.now():
                     show_result += 1
         return show_result
 
@@ -67,7 +67,7 @@ class Venue(db.Model):
         info = Venue.query.get(self.id).shows 
         if info:
             for show in info:
-                if show.created_date < datetime.utcnow().replace(tzinfo=pytz.UTC):
+                if show.created_date < datetime.now():
                     result["artist_id"] = show.artist_id
                     result["artist_name"] = show.artist.id
                     result["artist_image_link"] = show.artist.image_link
@@ -82,7 +82,7 @@ class Venue(db.Model):
         info = Venue.query.get(self.id).shows 
         if info:
             for show in info:
-                if show.created_date > datetime.utcnow().replace(tzinfo=pytz.UTC):
+                if show.created_date > datetime.now():
                     result["artist_id"] = show.artist_id
                     result["artist_name"] = show.artist.id
                     result["artist_image_link"] = show.artist.image_link
