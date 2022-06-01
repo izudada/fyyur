@@ -115,7 +115,7 @@ class Artist(db.Model):
         info = Artist.query.get(self.id).shows
         if info:
             for days in info:
-                if days.created_date > datetime.utcnow().replace(tzinfo=pytz.UTC):
+                if days.created_date > datetime.now():
                     show_result += 1
         return show_result
     
@@ -125,38 +125,44 @@ class Artist(db.Model):
         info = Artist.query.get(self.id).shows
         if info:
             for days in info:
-                if days.created_date < datetime.utcnow().replace(tzinfo=pytz.UTC):
+                if days.created_date < datetime.now():
                     show_result += 1
         return show_result
 
     @property
     def past_shows(self):
-        result = {}
         final_result = []
         info = Artist.query.get(self.id).shows 
         if info:
             for show in info:
-                if show.created_date < datetime.utcnow().replace(tzinfo=pytz.UTC):
-                    result["venue_id"] = show.venue_id
-                    result["venue_name"] = show.venue.name
-                    result["venue_image_link"] = show.venue.image_link
-                    result["start_time"] = str(show.created_date)
-                final_result.append(result)
+                if show.created_date < datetime.now():
+                    final_result.append(
+                        {
+                            "venue_id": show.venue_id,
+                            "venue_name": show.venue.name,
+                            "venue_image_link": show.venue.image_link,
+                            "start_time": str(show.created_date)
+                        }
+                    )
+      
         return final_result
 
     @property
     def upcoming_shows(self):
-        result = {}
         final_result = []
         info = Artist.query.get(self.id).shows 
         if info:
             for show in info:
-                if show.created_date > datetime.utcnow().replace(tzinfo=pytz.UTC):
-                    result["venue_id"] = show.venue_id
-                    result["venue_name"] = show.venue.name
-                    result["venue_image_link"] = show.venue.image_link
-                    result["start_time"] = str(show.created_date)
-                final_result.append(result)
+                if show.created_date > datetime.now():
+                    final_result.append(
+                        {
+                            "venue_id": show.venue_id,
+                            "venue_name": show.venue.name,
+                            "venue_image_link": show.venue.image_link,
+                            "start_time": str(show.created_date)
+                        }
+                    )
+                 
         return final_result
 
     # TODO: implement any missing fields, as a database migration using Flask-Migrate
