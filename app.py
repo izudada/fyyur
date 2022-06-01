@@ -448,21 +448,24 @@ def shows():
   # displays list of shows at /shows
   # TODO: replace with real venues data.
   data = []
-  inner_data = {}
   try:
-    all_shows = Show.query.all()
-    for show in all_shows:
-      inner_data["venue_id"] = show.venue_id
-      inner_data["venue_name"] = show.venue.name
-      inner_data["artist_id"] = show.artist.id
-      inner_data["artist_name"] = show.artist.name
-      inner_data["artist_image_link"] = show.artist.image_link
-      inner_data["start_time"] = str(show.created_date)
-      data.append(inner_data)
-  except:
-    flash("No available shows yet")
+    all_shows = Show.query.filter().all()
 
-  return render_template('pages/shows.html', shows=data)
+    for show in all_shows:
+      data.append(
+        {
+          "venue_id": show.venue_id,
+          "venue_name": show.venue.name,
+          "artist_id": show.artist.id,
+          "artist_name": show.artist.name,
+          "artist_image_link": show.artist.image_link,
+          "start_time": str(show.created_date)
+        }
+      )
+   
+    return render_template('pages/shows.html', shows=data)
+  except Exception as e:
+    print(e)
 
 @app.route('/shows/create')
 def create_shows():
