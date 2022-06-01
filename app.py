@@ -266,8 +266,8 @@ def show_artist(artist_id):
     return render_template('pages/show_artist.html', artist=data)
   except Exception as e:
     print(e)
-    flash('Artist does not exist' )
 
+  flash('Artist does not exist' )
   return render_template('pages/show_artist.html', artist=data)
 
 #  Update
